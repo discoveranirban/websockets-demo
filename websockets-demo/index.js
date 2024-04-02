@@ -21,9 +21,25 @@ wsServer.on("request", request => {
     connection.on("close", () => console.log("closed"));
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data);
-        console.log(result);
-        //I have received a message from the client
+         //I have received a message from the client
         //a user want to create a new game
+        if (result.method === "create") {
+            const clientId = result.clientId;
+            const gameId = guid();
+            games[gameId] = {
+                "id": gameId,
+                "balls": 20,
+                "clients": []
+            }
+
+            const payLoad = {
+                "method": "create",
+                "game" : games[gameId]
+            }
+
+            const con = clients[clientId].connection;
+            con.send(JSON.stringify(payLoad));
+        }
 
     });
 
